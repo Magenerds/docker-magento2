@@ -1,0 +1,19 @@
+web:
+  build: .
+  links:
+    - mysql:mysql
+  ports:
+    - "80:80"
+    - "443:443"
+  volumes:
+    - "./www:/var/www"
+
+mysql:
+  image: mysql
+  ports:
+      - "3306:3306"
+  environment:
+    MYSQL_ROOT_PASSWORD: password
+    MYSQL_DATABASE: magento
+    MYSQL_USER: magento
+    MYSQL_PASSWORD: password
