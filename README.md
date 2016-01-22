@@ -21,3 +21,26 @@ following command:
     ## Run container
     docker-compose up -d
 
+## Magento 2 installation
+
+    docker exec -ti magento2_web_1 composer --working-dir=/var/www/ install
+    docker exec -ti magento2_web_1 /var/www/bin/magento setup:install \
+        --backend-frontname="admin" \
+        --db-host="mysql" --db-name="magento" \
+        --db-user="magento" --db-password="password" \
+        --base-url="http://magento2.docker/" \
+        --language="de_DE" \
+        --timezone="Europe/Berlin" \
+        --currency="EUR" \
+        --use-secure=1 \
+        --base-url-secure="https://magento2.docker/" \
+        --use-secure-admin=1 \
+        --admin-user="admin" \
+        --admin-password="password123" \
+        --admin-email="team@techdivision.com" \
+        --admin-firstname="Super" \
+        --admin-lastname="Admin" \
+        --cleanup-database \
+        --sales-order-increment-prefix="DEV" \
+        --use-sample-data
+    
