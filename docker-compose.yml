@@ -7,6 +7,7 @@ web:
     - "443:443"
   volumes:
     - "./www:/var/www"
+    - "./conf/nginx/conf.d:/etc/nginx/conf.d"
 
 mysql:
   image: mysql

@@ -9,12 +9,16 @@
 # Base image and maintainer
 ################################################################################
 
-FROM ubuntu:14.04
+FROM nginx
+
 MAINTAINER Vadim Justus <v.justus@techdivision.com>
 
 ################################################################################
 # Build instructions
 ################################################################################
+
+## Remove default nginx configs.
+RUN rm -f /etc/nginx/conf.d/*
 
 ## Install packages
 RUN apt-get update && apt-get install -my \
@@ -27,18 +31,28 @@ RUN apt-get update && apt-get install -my \
     libapache2-mod-php5 \
     php5-cli \
     php5-curl \
+    php5-fpm \
     php5-gd \
+    php5-memcached \
     php5-mysql \
     php5-mcrypt \
     php5-intl \
     php5-xsl \
     php5-sqlite
 
-## Enable mod_rewrite for apache
-RUN a2enmod rewrite
+# ensure that PHP5 FPM run as root.
+RUN sed -i "s/user = www-data/user = root/" /etc/php5/fpm/pool.d/www.conf
+RUN sed -i "s/group = www-data/group = root/" /etc/php5/fpm/pool.d/www.conf
 
-## Enable mcrypt mod for php5
-RUN php5enmod mcrypt
+# create SSL certificates
+RUN mkdir /etc/nginx/ssl
+RUN openssl req -x509 \
+    -nodes \
+    -days 365 \
+    -newkey rsa:2048 \
+    -subj "/C=DE/ST=BY/L=Kolbermoor/O=TechDivision GmbH/OU=Munich/CN=techdivision.com/emailAddress=v.justus@techdivision.com" \
+    -keyout /etc/nginx/ssl/nginx.key \
+    -out /etc/nginx/ssl/nginx.crt
 
 ## Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- \
@@ -46,11 +60,12 @@ RUN curl -sS https://getcomposer.org/installer | php -- \
     --filename=composer
 
 ## Copy configuration file into image
-COPY conf/apache/vhost.conf /etc/apache2/sites-available/000-default.conf
+COPY conf/nginx/nginx.conf /etc/nginx/
+COPY conf/php/php.ini /etc/php5/fpm/conf.d/40-custom.ini
 COPY conf/supervisor/supervisord.conf /etc/supervisor/conf.d/
 
 ## Define mountable volumes
-VOLUME ["/var/www"]
+VOLUME ["/var/www", "/etc/nginx/conf.d"]
 
 ## Expose ports
 EXPOSE 80 443
