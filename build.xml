@@ -12,7 +12,7 @@
             </fileset>
         </copy>
         <exec executable="docker">
-            <arg line="exec magento2_web_1 chmod +x /var/www/bin/magento"/>
+            <arg line="exec magento2_web chmod +x /var/www/bin/magento"/>
         </exec>
     </target>
 

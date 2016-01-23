@@ -26,8 +26,8 @@ following command:
 
 ## Magento 2 installation
 
-    docker exec -ti magento2_web_1 composer --working-dir=/var/www/ install
-    docker exec -ti magento2_web_1 /var/www/bin/magento setup:install \
+    docker exec -ti magento2_web composer --working-dir=/var/www/ install
+    docker exec -ti magento2_web /var/www/bin/magento setup:install \
         --backend-frontname="admin" \
         --db-host="mysql" --db-name="magento" \
         --db-user="magento" --db-password="password" \
