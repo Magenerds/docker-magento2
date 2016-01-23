@@ -1,2 +1,4 @@
 ## Ignore IDE storage directory
 /.idea/
+/www/
+!/www/.gitkeep
