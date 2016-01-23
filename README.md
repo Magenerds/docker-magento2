@@ -26,8 +26,8 @@ following command:
 
 ## Magento 2 installation
 
-    docker exec -ti magento2_web composer --working-dir=/var/www/ install
-    docker exec -ti magento2_web /var/www/bin/magento setup:install \
+    docker exec -ti <NAME_OF_WEB_CONTAINER> composer --working-dir=/var/www/ install
+    docker exec -ti <NAME_OF_WEB_CONTAINER> /var/www/bin/magento setup:install \
         --backend-frontname="admin" \
         --db-host="mysql" --db-name="magento" \
         --db-user="magento" --db-password="password" \
@@ -46,4 +46,7 @@ following command:
         --cleanup-database \
         --sales-order-increment-prefix="DEV" \
         --use-sample-data
-    
+
+## Develop Magento modules
+Checkout your modules into src directory e.g. `git clone git@github.com:group/module-name.git src/app/code/Module/Name`
+and deploy module into instance with `ant deploy-code`. 

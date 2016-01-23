@@ -2,7 +2,10 @@
 <project name="Magento2" basedir=".">
 
     <!-- makes environment variables available -->
-    <property environment="env" />
+    <property environment="env"/>
+
+    <property file="build.properties"/>
+    <property file="build.default.properties"/>
 
     <!-- deploy magento 2 sources into www dir -->
     <target name="deploy-magento-sources">
@@ -12,7 +15,7 @@
             </fileset>
         </copy>
         <exec executable="docker">
-            <arg line="exec magento2_web chmod +x /var/www/bin/magento"/>
+            <arg line="exec ${docker.container.name.web} chmod +x /var/www/bin/magento"/>
         </exec>
     </target>
 
