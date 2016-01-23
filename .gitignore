@@ -3,3 +3,7 @@
 /www/
 !/www/.gitkeep
 /tmp/
+/.DS_Store
+/src/
+!/src/.gitkeep
+
