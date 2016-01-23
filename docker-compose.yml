@@ -1,5 +1,6 @@
 web:
   build: .
+  container_name: magento2_web
   links:
     - mysql:mysql
   ports:
@@ -11,6 +12,7 @@ web:
 
 mysql:
   image: mysql
+  container_name: magento2_mysql
   ports:
       - "3306:3306"
   environment:

@@ -11,6 +11,9 @@
                 <include name="**"/>
             </fileset>
         </copy>
+        <exec executable="docker">
+            <arg line="exec magento2_web_1 chmod +x /var/www/bin/magento"/>
+        </exec>
     </target>
 
     <!-- deploy sample data into www dir -->
