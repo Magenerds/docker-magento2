@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<project name="Magento2" basedir=".">
+
+    <!-- makes environment variables available -->
+    <property environment="env" />
+
+    <!-- deploy magento 2 sources into www dir -->
+    <target name="deploy-magento-sources">
+        <copy todir="${basedir}/www" overwrite="true">
+            <fileset dir="${basedir}/sources/magento2">
+                <include name="**"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <!-- deploy sample data into www dir -->
+    <target name="deploy-sample-data">
+        <copy todir="${basedir}/www" overwrite="true">
+            <fileset dir="${basedir}/sources/sample-data">
+                <include name="**"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <!-- deploy code from src dir to www dir -->
+    <target name="deploy-code">
+        <copy todir="${basedir}/www" overwrite="true">
+            <fileset dir="${basedir}/src">
+                <include name="**"/>
+            </fileset>
+        </copy>
+    </target>
+</project>

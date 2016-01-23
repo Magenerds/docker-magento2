@@ -1,3 +1,6 @@
-[submodule "www"]
-	path = www
+[submodule "sources/magento2"]
+	path = sources/magento2
 	url = git@github.com:magento/magento2.git
+[submodule "sources/sample-data"]
+	path = sources/sample-data
+	url = git@github.com:magento/magento2-sample-data.git

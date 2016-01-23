@@ -15,6 +15,9 @@ following command:
     ## Checkout Magento sources (git submodule)
     git submodule update --init
     
+    ## Deploy Magento2 sources to www dir
+    ant deploy-magento-sources
+    
     ## Build images (Dockerfile)
     docker-compose build
     
