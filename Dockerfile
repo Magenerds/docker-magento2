@@ -63,8 +63,8 @@ RUN curl -sS https://getcomposer.org/installer | php -- \
 
 ## Copy configuration file into image
 COPY conf/nginx/nginx.conf /etc/nginx/
-COPY conf/php/php.ini /etc/php5/fpm/conf.d/40-custom.ini
-COPY conf/php/php.ini /etc/php5/cli/conf.d/40-custom.ini
+COPY conf/php/fpm/php.ini /etc/php5/fpm/conf.d/40-custom.ini
+COPY conf/php/cli/php.ini /etc/php5/cli/conf.d/40-custom.ini
 COPY conf/supervisor/supervisord.conf /etc/supervisor/conf.d/
 COPY conf/cron.d/magento /etc/cron.d/magento
 
