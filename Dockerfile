@@ -39,7 +39,8 @@ RUN apt-get update && apt-get install -my \
     php5-mcrypt \
     php5-intl \
     php5-xsl \
-    php5-sqlite
+    php5-sqlite \
+    php5-xdebug
 
 # ensure that PHP5 FPM run as root.
 RUN sed -i "s/user = www-data/user = root/" /etc/php5/fpm/pool.d/www.conf
@@ -71,7 +72,7 @@ COPY conf/cron.d/magento /etc/cron.d/magento
 VOLUME ["/var/www", "/etc/nginx/conf.d"]
 
 ## Expose ports
-EXPOSE 80 443
+EXPOSE 80 443 9000
 
 ## Define entrypoint
 CMD ["/usr/bin/supervisord"]
