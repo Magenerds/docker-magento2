@@ -7,6 +7,35 @@
     <property file="build.properties"/>
     <property file="build.default.properties"/>
 
+    <!-- install magento 2 inside docker -->
+    <target name="m2-install">
+        <exec executable="docker">
+            <arg line="exec -i ${docker.container.name.web} composer --working-dir=/var/www/ install"/>
+        </exec>
+        <exec executable="docker">
+            <arg line="exec -i ${docker.container.name.web} /var/www/bin/magento setup:install
+                    --backend-frontname='${magento.backend.frontname}'
+                    --db-host='mysql' --db-name='${magento.db.name}'
+                    --db-user='magento' --db-password='${magento.db.pass}'
+                    --base-url='http://magento2.docker/'
+                    --language='${magento.language}'
+                    --timezone='${magento.timezone}'
+                    --currency='${magento.currency}'
+                    --use-secure=1
+                    --base-url-secure='https://magento2.docker/'
+                    --use-secure-admin=1
+                    --admin-user='${magento.admin.user}'
+                    --admin-password='${magento.admin.pass}'
+                    --admin-email='${magento.admin.email}'
+                    --admin-firstname='${magento.admin.firstname}'
+                    --admin-lastname='${magento.admin.lastname}'
+                    --cleanup-database
+                    --sales-order-increment-prefix='DEV'
+                    --use-sample-data
+                "/>
+        </exec>
+    </target>
+
     <!-- deploy magento 2 sources into www dir -->
     <target name="deploy-magento-sources">
         <copy todir="${basedir}/www" overwrite="true">
@@ -26,6 +55,21 @@
                 <include name="**"/>
             </fileset>
         </copy>
+    </target>
+
+    <!-- installs magento2 sample data -->
+    <target name="install-sample-data">
+        <antcall target="deploy-sample-data"/>
+        <antcall target="m2-setup-upgrade"/>
+        <exec executable="docker">
+            <arg line="exec ${docker.container.name.web} php bin/magento setup:di:compile"/>
+        </exec>
+    </target>
+
+    <target name="m2-setup-upgrade">
+        <exec executable="docker">
+            <arg line="exec ${docker.container.name.web} php /var/www/bin/magento setup:upgrade"/>
+        </exec>
     </target>
 
     <!-- deploy code from src dir to www dir -->
