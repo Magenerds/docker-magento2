@@ -9,8 +9,8 @@
 
     <!-- install magento 2 inside docker -->
     <target name="m2-install">
-        <exec executable="docker">
-            <arg line="exec -i ${docker.container.name.web} composer --working-dir=/var/www/ install"/>
+        <exec executable="composer">
+            <arg line="--working-dir=www/ install"/>
         </exec>
         <exec executable="docker">
             <arg line="exec -i ${docker.container.name.web} /var/www/bin/magento setup:install
