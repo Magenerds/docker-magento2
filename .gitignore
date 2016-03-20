@@ -4,8 +4,6 @@
 ## Add www and src directory to repository, but nothing inside
 /www/
 !/www/.gitkeep
-/src/
-!/src/.gitkeep
 
 ## Ignore temporary files and directories
 /tmp/
