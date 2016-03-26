@@ -63,14 +63,14 @@ RUN curl -sS https://getcomposer.org/installer | php -- \
 
 ## Copy configuration file into image
 COPY conf/nginx/nginx.conf /etc/nginx/
-##COPY conf/nginx/conf.d /etc/nginx/conf.d
+COPY conf/nginx/conf.d /etc/nginx/conf.d
 COPY conf/php/fpm/php.ini /etc/php5/fpm/conf.d/40-custom.ini
 COPY conf/php/cli/php.ini /etc/php5/cli/conf.d/40-custom.ini
 COPY conf/supervisor/supervisord.conf /etc/supervisor/conf.d/
 COPY conf/cron.d/magento /etc/cron.d/magento
 
 ## Define mountable volumes
-VOLUME ["/var/www", "/etc/nginx/conf.d"]
+##VOLUME ["/var/www", "/etc/nginx/conf.d"]
 
 ## Expose ports
 EXPOSE 80 443 9000

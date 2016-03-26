@@ -13,3 +13,6 @@
 
 ## Ignore custom build properties
 build.properties
+
+node_modules
+src

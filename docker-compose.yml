@@ -7,9 +7,9 @@ web:
     - "80:80"
     - "443:443"
     - "9000:9000"
-  volumes:
-    - "./www:/var/www"
-    - "./conf/nginx/conf.d:/etc/nginx/conf.d"
+#  volumes:
+#    - "./www:/var/www"
+#    - "./conf/nginx/conf.d:/etc/nginx/conf.d"
 
 mysql:
   image: mysql
