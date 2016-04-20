@@ -8,12 +8,16 @@
     <property file="build.default.properties"/>
 
     <!-- install magento 2 inside docker -->
-    <target name="m2-install">
+    <target name="install-m2">
         <exec executable="composer">
-            <arg line="--working-dir=www/ install"/>
+            <arg line="--working-dir=${basedir}/www/magento/ install"/>
+        </exec>
+        <antcall target="copy-www"/>
+        <exec executable="docker">
+            <arg line="exec ${docker.container.name.web} chmod +x /var/www/magento/bin/magento"/>
         </exec>
         <exec executable="docker">
-            <arg line="exec -i ${docker.container.name.web} /var/www/bin/magento setup:install
+            <arg line="exec -i ${docker.container.name.web} /var/www/magento/bin/magento setup:install
                     --backend-frontname='${magento.backend.frontname}'
                     --db-host='mysql' --db-name='${magento.db.name}'
                     --db-user='magento' --db-password='${magento.db.pass}'
@@ -34,23 +38,30 @@
                     --use-sample-data
                 "/>
         </exec>
+        <exec executable="docker">
+            <arg line="exec ${docker.container.name.web} /var/www/magento/bin/magento deploy:mode:set developer"/>
+        </exec>
+    </target>
+
+    <!-- Copies the whole www directory to docker container -->
+    <target name="copy-www">
+        <exec executable="docker">
+            <arg line="cp ${basedir}/www/magento/ ${docker.container.name.web}:/var/www/"/>
+        </exec>
     </target>
 
     <!-- deploy magento 2 sources into www dir -->
     <target name="deploy-magento-sources">
-        <copy todir="${basedir}/www" overwrite="true">
+        <copy todir="${basedir}/www/magento" overwrite="true">
             <fileset dir="${basedir}/sources/magento2">
                 <include name="**"/>
             </fileset>
         </copy>
-        <exec executable="docker">
-            <arg line="exec ${docker.container.name.web} chmod +x /var/www/bin/magento"/>
-        </exec>
     </target>
 
     <!-- deploy sample data into www dir -->
     <target name="deploy-sample-data">
-        <copy todir="${basedir}/www" overwrite="true">
+        <copy todir="${basedir}/www/magento" overwrite="true">
             <fileset dir="${basedir}/sources/sample-data">
                 <include name="**"/>
             </fileset>
@@ -60,6 +71,7 @@
     <!-- installs magento2 sample data -->
     <target name="install-sample-data">
         <antcall target="deploy-sample-data"/>
+        <antcall target="copy-www"/>
         <antcall target="m2-setup-upgrade"/>
         <exec executable="docker">
             <arg line="exec ${docker.container.name.web} php bin/magento setup:di:compile"/>
@@ -70,14 +82,5 @@
         <exec executable="docker">
             <arg line="exec ${docker.container.name.web} php /var/www/bin/magento setup:upgrade"/>
         </exec>
-    </target>
-
-    <!-- deploy code from src dir to www dir -->
-    <target name="deploy-code">
-        <copy todir="${basedir}/www" overwrite="true">
-            <fileset dir="${basedir}/src">
-                <include name="**"/>
-            </fileset>
-        </copy>
     </target>
 </project>

@@ -42,7 +42,7 @@ RUN apt-get update && apt-get install -my \
     php5-sqlite \
     php5-xdebug
 
-# ensure that PHP5 FPM run as root.
+# ensure that PHP5 FPM runs as root.
 RUN sed -i "s/user = www-data/user = root/" /etc/php5/fpm/pool.d/www.conf
 RUN sed -i "s/group = www-data/group = root/" /etc/php5/fpm/pool.d/www.conf
 
@@ -68,9 +68,6 @@ COPY conf/php/fpm/php.ini /etc/php5/fpm/conf.d/40-custom.ini
 COPY conf/php/cli/php.ini /etc/php5/cli/conf.d/40-custom.ini
 COPY conf/supervisor/supervisord.conf /etc/supervisor/conf.d/
 COPY conf/cron.d/magento /etc/cron.d/magento
-
-## Define mountable volumes
-##VOLUME ["/var/www", "/etc/nginx/conf.d"]
 
 ## Expose ports
 EXPOSE 80 443 9000
