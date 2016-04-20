@@ -76,6 +76,6 @@ Whenever you have to run `bin/magento setup:upgrade` just execute `ant m2-setup-
 As we use Mac OS the only way to sync files to the VM is vboxsf which is so slow that it is impossible to develop
 with that :-) But there is a solution for that: Enter `gulp` into console in order to start the gulpfile. It watches
 the `src` folder for your development changes. If you want to change the instance sources in `www` folder just run
-`ant copy-www` in order to sync your instance changes. But remember: Never change the core :-)
+`ant copy-www` in order to sync your instance changes. But remember: Never change the core or Ben Marks is hunting you :-)
  
 ![Edit the core](https://d21ii91i3y6o6h.cloudfront.net/gallery_images/from_proof/11223/large/1458314216/hey-did-you-just-edit-the-core.png "Edit the core")
