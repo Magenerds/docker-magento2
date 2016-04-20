@@ -56,32 +56,26 @@ Enter the following content into the file:
         }
     }
     
-Finally install Magento 2:
+Finally install Magento 2 (it will be installed in developer mode):
 
+    ## If you want to use sample data do the following before installing
+    cd sources/sample-data
+    git tag
+    git checkout 2.0.0
+    ant deploy-sample-data
+    
     ## runs composer install and executes installation script
     ant m2-install
     
-## Install Magento 2 sample data
-
-    ## Run the following command
-    ant install-sample-data
-    
 ## Develop Magento modules
-Checkout your modules into src directory e.g. `git clone git@github.com:group/module-name.git src/app/code/Module/Name`
-and deploy module into instance with `ant deploy-code`. 
+Checkout your modules into src directory e.g. `git clone git@github.com:group/module-name.git src`. Next open the
+gulpfile.js and edit `app/code/Vendor/MyModule/` of `options` array to your module name.
 
 Whenever you have to run `bin/magento setup:upgrade` just execute `ant m2-setup-upgrade`.
 
 As we use Mac OS the only way to sync files to the VM is vboxsf which is so slow that it is impossible to develop
-with that :-) But there is a solution: https://github.com/brikis98/docker-osx-dev Follow the instructions on the
-github site in order to install it. Afterwards you can sync local files from `www` directory to the docker VM via
-`docker-osx-dev` command. When asked the following answer with `yes`:
-
-    Found VirtualBox shared folders on your Boot2Docker VM. These may void any performance benefits from using docker-osx-dev
-    Would you like this script to remove them?
-    1) yes
-    2) no
-
-It initially takes a little bit of time to sync the complete directory. But afterwards
-changes during development are synced really fast. But this step is optionally. You can also develop without docker-osx-dev... 
-but it is slow :-)
+with that :-) But there is a solution for that: Enter `gulp` into console in order to start the gulpfile. It watches
+the `src` folder for your development changes. If you want to change the instance sources in `www` folder just run
+`ant copy-www` in order to sync your instance changes. But remember: Never change the core :-)
+ 
+![Edit the core](https://d21ii91i3y6o6h.cloudfront.net/gallery_images/from_proof/11223/large/1458314216/hey-did-you-just-edit-the-core.png "Edit the core")
