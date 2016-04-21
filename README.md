@@ -65,7 +65,7 @@ Finally install Magento 2 (it will be installed in developer mode):
     ant deploy-sample-data
     
     ## runs composer install and executes installation script
-    ant m2-install
+    ant install-m2
     
 ## Develop Magento modules
 Checkout your modules into src directory e.g. `git clone git@github.com:group/module-name.git src`. Next open the

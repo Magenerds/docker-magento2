@@ -11,7 +11,7 @@
 
 FROM nginx
 
-MAINTAINER Vadim Justus <v.justus@techdivision.com>
+MAINTAINER Florian Sydekum <f.sydekum@techdivision.com>
 
 ################################################################################
 # Build instructions
