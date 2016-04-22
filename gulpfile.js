@@ -10,7 +10,7 @@ var options = {
     module: 'app/code/Vendor/MyModule/',
     dev: {
         src: 'src/**/*',
-        www: 'www/magento/**/*'
+        www: 'www/magento'
     },
     docker: {
         container: 'dockermagento2_web_1',
