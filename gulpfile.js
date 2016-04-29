@@ -7,10 +7,10 @@ exec = require('child_process').exec;
 
 // define options for task usage
 var options = {
-    module: 'app/code/Vendor/MyModule/',
+    module: '',
     dev: {
         src: 'src/**/*',
-        www: 'www/magento'
+        www: 'www/magento/'
     },
     docker: {
         container: 'dockermagento2_web_1',
@@ -18,7 +18,7 @@ var options = {
     }
 };
 
-gulp.task('docker-deploy', function() {
+gulp.task('docker-deploy', function () {
     exec('cd src && docker cp . ' + options.docker.container + ':' + options.docker.basepath + options.module);
 });
 
@@ -27,7 +27,7 @@ gulp.task('docker-deploy', function() {
  */
 gulp.task('default', function () {
     gutil.log('Watching ', gutil.colors.blue("'src/**/*'"), 'for changes...');
-    return watch(options.dev.src, { events: ['add', 'unlink', 'change', 'unlinkDir'] }, function(file) {
+    return watch(options.dev.src, { events: ['add', 'unlink', 'change', 'unlinkDir'] }, function (file) {
         // check if directory unlink is going on
         if (file.event === 'unlinkDir') {
             exec('docker exec -t ' + options.docker.container + ' rm -rf ' + options.docker.basepath + options.module + file.relative, function () {
@@ -49,14 +49,14 @@ gulp.task('default', function () {
         }
 
         // create directory first due to problems with addDir event
-        exec('docker exec -t ' + options.docker.container + ' mkdir -p ' + options.docker.basepath + options.module + file.relative.replace(file.basename, ""), function() {
+        exec('docker exec -t ' + options.docker.container + ' mkdir -p ' + options.docker.basepath + options.module + file.relative.replace(file.basename, ""), function () {
             // copy file
             exec('docker cp ' + file.path + ' ' + options.docker.container + ':' + options.docker.basepath + options.module + file.relative, function () {
                 gutil.log('Copied', gutil.colors.magenta(file.relative), 'to', gutil.colors.blue(options.docker.container));
                 gutil.log(options.docker.basepath + options.module + file.relative);
             });
         });
-        exec('mkdir -p ' + options.dev.www + options.module + file.relative.replace(file.basename, ""), function() {
+        exec('mkdir -p ' + options.dev.www + options.module + file.relative.replace(file.basename, ""), function () {
             exec('cp ' + file.path + ' ' + options.dev.www + options.module + file.relative);
         });
     });

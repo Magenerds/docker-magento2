@@ -80,7 +80,7 @@
 
     <target name="m2-setup-upgrade">
         <exec executable="docker">
-            <arg line="exec ${docker.container.name.web} php /var/www/bin/magento setup:upgrade"/>
+            <arg line="exec ${docker.container.name.web} php /var/www/magento/bin/magento setup:upgrade"/>
         </exec>
     </target>
 </project>
