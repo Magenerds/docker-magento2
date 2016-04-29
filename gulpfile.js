@@ -7,7 +7,7 @@ exec = require('child_process').exec;
 
 // define options for task usage
 var options = {
-    module: '',
+    module: 'app/code/Vendor/MyModule/',
     dev: {
         src: 'src/**/*',
         www: 'www/magento/'
