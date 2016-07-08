@@ -9,10 +9,12 @@
 
     <!-- install magento 2 inside docker -->
     <target name="install-m2">
-        <exec executable="composer">
-            <arg line="--working-dir=${basedir}/www/magento/ install"/>
+        <antcall target="copy-www-to-docker"/>
+        <exec executable="docker">
+            <arg line="exec ${docker.container.name.web} composer --working-dir=/var/www/magento/ install"/>
         </exec>
-        <antcall target="copy-www"/>
+        <delete dir="${basedir}/www/magento/"/>
+        <antcall target="copy-www-to-local"/>
         <exec executable="docker">
             <arg line="exec ${docker.container.name.web} chmod +x /var/www/magento/bin/magento"/>
         </exec>
@@ -44,9 +46,44 @@
     </target>
 
     <!-- Copies the whole www directory to docker container -->
-    <target name="copy-www">
+    <target name="copy-www-to-docker">
         <exec executable="docker">
             <arg line="cp ${basedir}/www/magento/ ${docker.container.name.web}:/var/www/"/>
+        </exec>
+        <exec executable="docker">
+            <arg line="exec ${docker.container.name.web} chmod +x /var/www/magento/bin/magento"/>
+        </exec>
+    </target>
+
+    <!-- Copies the whole www directory to local machine -->
+    <target name="copy-www-to-local">
+        <exec executable="docker">
+            <arg line="cp ${docker.container.name.web}:/var/www/magento/ ${basedir}/www/"/>
+        </exec>
+    </target>
+
+    <target name="install">
+        <exec executable="docker">
+            <arg line="exec -i ${docker.container.name.web} /var/www/magento/bin/magento setup:install
+                    --backend-frontname='${magento.backend.frontname}'
+                    --db-host='mysql' --db-name='${magento.db.name}'
+                    --db-user='magento' --db-password='${magento.db.pass}'
+                    --base-url='http://magento2.docker/'
+                    --language='${magento.language}'
+                    --timezone='${magento.timezone}'
+                    --currency='${magento.currency}'
+                    --use-secure=1
+                    --base-url-secure='https://magento2.docker/'
+                    --use-secure-admin=1
+                    --admin-user='${magento.admin.user}'
+                    --admin-password='${magento.admin.pass}'
+                    --admin-email='${magento.admin.email}'
+                    --admin-firstname='${magento.admin.firstname}'
+                    --admin-lastname='${magento.admin.lastname}'
+                    --cleanup-database
+                    --sales-order-increment-prefix='DEV'
+                    --use-sample-data
+                "/>
         </exec>
     </target>
 
