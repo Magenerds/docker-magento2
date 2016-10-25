@@ -28,6 +28,8 @@ Checkout your modules into src directory e.g.
 gulpfile.js and edit `app/code/Vendor/MyModule/` of `options` array to 
 your module name.
 
+Install all necessary tools via npm: `npm install`.
+
 There is a watcher built with gulp. Just enter `gulp` and it watches
 the `src` directory for changes and copies them to the docker instance.
 
