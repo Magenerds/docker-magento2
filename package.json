@@ -9,10 +9,15 @@
       "name": "Florian Sydekum"
     }
   ],
-  "devDependencies": {
-    "del": "^2.2.2",
+  "dependencies": {
+    "del": "^2.2.0",
     "gulp": "~3.9.1",
     "gulp-util": "~3.0.7",
-    "gulp-watch": "^4.3.10"
-  }
+    "gulp-watch": "^4.3.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/magenerds/docker-magento2.git"
+  },
+  "license": "OSL-3.0"
 }
