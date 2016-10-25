@@ -61,6 +61,9 @@ RUN curl -sS https://getcomposer.org/installer | php -- \
     --install-dir=/usr/bin \
     --filename=composer
 
+## Install magerun
+RUN curl -sS https://files.magerun.net/n98-magerun2.phar > /usr/bin/mr2 && chmod +x /usr/bin/mr2
+
 ## Copy configuration file into image
 COPY conf/nginx/nginx.conf /etc/nginx/
 COPY conf/nginx/conf.d /etc/nginx/conf.d

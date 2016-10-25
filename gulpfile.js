@@ -19,14 +19,14 @@ var options = {
 };
 
 gulp.task('docker-deploy', function () {
-    exec('cd src && docker cp . ' + options.docker.container + ':' + options.docker.basepath + options.module);
+    exec('cd ' + options.dev.src + ' && docker cp . ' + options.docker.container + ':' + options.docker.basepath + options.module);
 });
 
 /**
  * Default task which watches all files in src and linked magento_coresources files for instant deployment
  */
 gulp.task('default', function () {
-    gutil.log('Watching ', gutil.colors.blue("'src/**/*'"), 'for changes...');
+    gutil.log('Watching ', gutil.colors.blue(options.dev.src), 'for changes...');
     return watch(options.dev.src, { events: ['add', 'unlink', 'change', 'unlinkDir'] }, function (file) {
         // check if directory unlink is going on
         if (file.event === 'unlinkDir') {
