@@ -40,3 +40,4 @@ container
 - `ant copy-www-to-local` Copies the `www` directory from the docker
 container to your local machine
 - `bin/mr2` Runs magerun 2 inside the docker container
+- `docker exec -ti magento2_instance sh` Get console of docker container
