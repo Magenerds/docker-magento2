@@ -13,7 +13,7 @@ var options = {
         www: 'www/magento/'
     },
     docker: {
-        container: 'dockermagento2_web_1',
+        container: 'magento2_instance',
         basepath: '/var/www/magento/'
     }
 };
