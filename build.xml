@@ -76,7 +76,7 @@
                 "/>
         </exec>
         <exec executable="docker">
-            <arg line="exec ${docker.container.name.web} /var/www/magento/bin/magento deploy:mode:set developer"/>
+            <arg line="exec magento2_instance /var/www/magento/bin/magento deploy:mode:set developer"/>
         </exec>
         <antcall target="copy-www-to-local"/>
     </target>
