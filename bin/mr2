@@ -1,0 +1,3 @@
+#!/bin/bash
+CMD="cd /var/www/magento && mr2 $@"
+docker exec -it magento2_instance bash -c "$CMD"

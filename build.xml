@@ -7,28 +7,63 @@
     <property file="build.properties"/>
     <property file="build.default.properties"/>
 
-    <!-- install magento 2 inside docker -->
+    <!-- builds the container image -->
+    <target name="build">
+        <antcall target="destroy-container"/>
+        <antcall target="init-container"/>
+        <antcall target="install-m2"/>
+    </target>
+
+    <!-- destroys an existing container -->
+    <target name="destroy-container">
+        <exec executable="docker">
+            <arg line="stop magento2_instance"/>
+        </exec>
+        <exec executable="docker">
+            <arg line="rm magento2_instance"/>
+        </exec>
+    </target>
+
+    <!-- initalizes a new container -->
+    <target name="init-container">
+        <exec executable="docker">
+            <arg line="build -t magenerds_magento2 ."/>
+        </exec>
+        <exec executable="docker">
+            <arg line="run -d --name magento2_instance -p 80:80 -p 443:443 magenerds_magento2"/>
+        </exec>
+    </target>
+
+    <!-- installs Magento 2 -->
     <target name="install-m2">
+        <antcall target="init-magento"/>
+        <antcall target="init-sample-data"/>
+        <exec executable="sh" dir="${basedir}/www/magento">
+            <arg value="-c" />
+            <arg value="find . | grep .git | xargs rm -rf"/>
+        </exec>
+        <exec executable="docker">
+            <arg line="exec -i magento2_instance mkdir -p /var/www/magento"/>
+        </exec>
         <antcall target="copy-www-to-docker"/>
+
         <exec executable="docker">
-            <arg line="exec ${docker.container.name.web} composer --working-dir=/var/www/magento/ install"/>
-        </exec>
-        <delete dir="${basedir}/www/magento/"/>
-        <antcall target="copy-www-to-local"/>
-        <exec executable="docker">
-            <arg line="exec ${docker.container.name.web} chmod +x /var/www/magento/bin/magento"/>
+            <arg line="exec magento2_instance composer --working-dir=/var/www/magento/ install"/>
         </exec>
         <exec executable="docker">
-            <arg line="exec -i ${docker.container.name.web} /var/www/magento/bin/magento setup:install
+            <arg line="exec magento2_instance mysql -e 'CREATE DATABASE ${magento.db.name} CHARACTER SET utf8 COLLATE utf8_general_ci;'"/>
+        </exec>
+        <exec executable="docker">
+            <arg line="exec -i magento2_instance php -d memory_limit=512M /var/www/magento/bin/magento setup:install
                     --backend-frontname='${magento.backend.frontname}'
-                    --db-host='mysql' --db-name='${magento.db.name}'
-                    --db-user='magento' --db-password='${magento.db.pass}'
-                    --base-url='http://magento2.docker/'
+                    --db-host='${magento.db.host}'
+                    --db-name='${magento.db.name}'
+                    --base-url='${magento.base.url}'
                     --language='${magento.language}'
                     --timezone='${magento.timezone}'
                     --currency='${magento.currency}'
                     --use-secure=1
-                    --base-url-secure='https://magento2.docker/'
+                    --base-url-secure='${magento.secure.base.url}'
                     --use-secure-admin=1
                     --admin-user='${magento.admin.user}'
                     --admin-password='${magento.admin.pass}'
@@ -43,52 +78,20 @@
         <exec executable="docker">
             <arg line="exec ${docker.container.name.web} /var/www/magento/bin/magento deploy:mode:set developer"/>
         </exec>
+        <antcall target="copy-www-to-local"/>
     </target>
 
-    <!-- Copies the whole www directory to docker container -->
-    <target name="copy-www-to-docker">
-        <exec executable="docker">
-            <arg line="cp ${basedir}/www/magento/ ${docker.container.name.web}:/var/www/"/>
+    <!-- checks out and prepares the magento sources -->
+    <target name="init-magento">
+        <exec executable="git">
+            <arg line="submodule update --init"/>
         </exec>
-        <exec executable="docker">
-            <arg line="exec ${docker.container.name.web} chmod +x /var/www/magento/bin/magento"/>
+        <exec executable="git" dir="${basedir}/sources/magento2">
+            <arg line="pull"/>
         </exec>
-    </target>
-
-    <!-- Copies the whole www directory to local machine -->
-    <target name="copy-www-to-local">
-        <exec executable="docker">
-            <arg line="cp ${docker.container.name.web}:/var/www/magento/ ${basedir}/www/"/>
+        <exec executable="git" dir="${basedir}/sources/magento2">
+            <arg line="checkout ${magento.version}"/>
         </exec>
-    </target>
-
-    <target name="install">
-        <exec executable="docker">
-            <arg line="exec -i ${docker.container.name.web} /var/www/magento/bin/magento setup:install
-                    --backend-frontname='${magento.backend.frontname}'
-                    --db-host='mysql' --db-name='${magento.db.name}'
-                    --db-user='magento' --db-password='${magento.db.pass}'
-                    --base-url='http://magento2.docker/'
-                    --language='${magento.language}'
-                    --timezone='${magento.timezone}'
-                    --currency='${magento.currency}'
-                    --use-secure=1
-                    --base-url-secure='https://magento2.docker/'
-                    --use-secure-admin=1
-                    --admin-user='${magento.admin.user}'
-                    --admin-password='${magento.admin.pass}'
-                    --admin-email='${magento.admin.email}'
-                    --admin-firstname='${magento.admin.firstname}'
-                    --admin-lastname='${magento.admin.lastname}'
-                    --cleanup-database
-                    --sales-order-increment-prefix='DEV'
-                    --use-sample-data
-                "/>
-        </exec>
-    </target>
-
-    <!-- deploy magento 2 sources into www dir -->
-    <target name="deploy-magento-sources">
         <copy todir="${basedir}/www/magento" overwrite="true">
             <fileset dir="${basedir}/sources/magento2">
                 <include name="**"/>
@@ -96,8 +99,14 @@
         </copy>
     </target>
 
-    <!-- deploy sample data into www dir -->
-    <target name="deploy-sample-data">
+    <!-- initializes Magento 2 sample data -->
+    <target name="init-sample-data" if="${use.sample.data}">
+        <exec executable="git" dir="${basedir}/sources/sample-data">
+            <arg line="pull"/>
+        </exec>
+        <exec executable="git" dir="${basedir}/sources/magento2">
+            <arg line="checkout ${magento.version}"/>
+        </exec>
         <copy todir="${basedir}/www/magento" overwrite="true">
             <fileset dir="${basedir}/sources/sample-data">
                 <include name="**"/>
@@ -105,19 +114,20 @@
         </copy>
     </target>
 
-    <!-- installs magento2 sample data -->
-    <target name="install-sample-data">
-        <antcall target="deploy-sample-data"/>
-        <antcall target="copy-www"/>
-        <antcall target="m2-setup-upgrade"/>
+    <!-- copies the whole www directory to docker container -->
+    <target name="copy-www-to-docker">
         <exec executable="docker">
-            <arg line="exec ${docker.container.name.web} php bin/magento setup:di:compile"/>
+            <arg line="cp ${basedir}/www/magento/ magento2_instance:/var/www/"/>
+        </exec>
+        <exec executable="docker">
+            <arg line="exec magento2_instance chmod +x /var/www/magento/bin/magento"/>
         </exec>
     </target>
 
-    <target name="m2-setup-upgrade">
+    <!-- copies the whole www directory to local machine -->
+    <target name="copy-www-to-local">
         <exec executable="docker">
-            <arg line="exec ${docker.container.name.web} php /var/www/magento/bin/magento setup:upgrade"/>
+            <arg line="cp magento2_instance:/var/www/magento/ ${basedir}/www/"/>
         </exec>
     </target>
 </project>
