@@ -30,7 +30,7 @@
             <arg line="build -t magenerds_magento2 ."/>
         </exec>
         <exec executable="docker">
-            <arg line="run -d --name magento2_instance -p 80:80 -p 443:443 magenerds_magento2"/>
+            <arg line="run -d --name magento2_instance -p 80:80 -p 443:443 -p 3306:3306 magenerds_magento2"/>
         </exec>
     </target>
 
