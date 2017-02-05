@@ -1,0 +1,4 @@
+#!/bin/bash
+IP=$(ifconfig | grep -E -o "inet 192\.([0-9]{1,3}[\.]){2}[0-9]{1,3}" | head -n 1 | sed -e "s/inet //")
+CMD="cd /var/www/magento && PHP_IDE_CONFIG=serverName=magento2.docker php -dxdebug.remote_autostart=1 -dxdebug.remote_host=$IP /usr/bin/mr2 $@"
+docker exec -ti magento2_instance sh -c "$CMD"

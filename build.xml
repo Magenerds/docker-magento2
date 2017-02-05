@@ -36,6 +36,7 @@
 
     <!-- installs Magento 2 -->
     <target name="install-m2">
+        <delete dir="${basedir}/www/"/>
         <antcall target="init-magento"/>
         <antcall target="init-sample-data"/>
         <exec executable="sh" dir="${basedir}/www/magento">
