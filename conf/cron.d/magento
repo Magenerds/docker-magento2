@@ -1,3 +1,3 @@
-*/1 * * * *     root    php -c /etc/php5/cli/php.ini /var/www/bin/magento cron:run
-*/1 * * * *     root    php -c /etc/php5/cli/php.ini /var/www/update/cron.php
-*/1 * * * *     root    php -c /etc/php5/cli/php.ini /var/www/bin/magento setup:cron:run
+*/1 * * * *     root    php -c /etc/php5/cli/php.ini /var/www/magento/bin/magento cron:run
+*/1 * * * *     root    php -c /etc/php5/cli/php.ini /var/www/magento/update/cron.php
+*/1 * * * *     root    php -c /etc/php5/cli/php.ini /var/www/magento/bin/magento setup:cron:run
